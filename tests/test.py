@@ -29,7 +29,7 @@ from helper import *
 from utils import getSignature, createLeaf, hashPadded, libsnark2python, normalize_proof, hex2int
 import ed25519 as ed
 
-from web3 import Web3, HTTPProvider, TestRPCProvider
+from web3 import Web3, HTTPProvider
 
 host = sys.argv[1] if len(sys.argv) > 1 else "localhost"
 w3 = Web3(HTTPProvider("http://" + host + ":8545"))
@@ -67,7 +67,6 @@ if __name__ == "__main__":
     
     # Iterate over transactions on the merkle tree
     for j in range (1,noTx + 1):
-
         leaves.append([])
         
         # create a random pub key from priv key
@@ -135,6 +134,7 @@ if __name__ == "__main__":
     #root , merkle_tree = utils.genMerkelTree(tree_depth, leaves[0])
 
     try:
+        import pdb; pdb.set_trace()
         inputs = libsnark2python(proof["input"])     
 
         proof_input_root = libsnark2python(proof["input"][:2])[0] 
@@ -148,8 +148,10 @@ if __name__ == "__main__":
         first_leaf = libsnark2python(proof["input"][4:6])[0]
         assert first_leaf == "0x" + leaves[1][0], "First leaf {} is not matching the leaf".format(first_leaf, leaves[1][0])
 
+        print("contract deploying...")
         contract = contract_deploy(1, "../keys/vk.json", root, host)
 
+        print("calling verify on contract")
         result = verify(contract, proof, host)
 
         print(result)

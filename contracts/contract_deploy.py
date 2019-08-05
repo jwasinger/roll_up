@@ -20,7 +20,7 @@
 import json
 import web3
 
-from web3 import Web3, HTTPProvider, TestRPCProvider
+from web3 import Web3, HTTPProvider
 from solc import compile_source, compile_standard, compile_files
 from solc import compile_source, compile_files, link_code
 from web3.contract import ConciseContract

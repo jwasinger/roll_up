@@ -67,13 +67,14 @@ def contract_deploy(tree_depth, vk_dir, merkle_root, host="localhost"):
     rollup = w3.eth.contract(abi=rollup_interface['abi'], bytecode=rollup_interface['bin'])
     verifier = w3.eth.contract(abi=verifier_interface['abi'], bytecode=verifier_interface['bin'])
 
+    # import pdb; pdb.set_trace()
     # Get transaction hash from deployed contract
-    tx_hash = verifier.deploy(args=vk, transaction={'from': w3.eth.accounts[0], 'gas': 4000000})
+    # tx_hash = verifier.deploy(args=vk, transaction={'from': w3.eth.accounts[0], 'gas': 4000000})
+    tx_hash = verifier.constructor(*vk).transact(transaction = {'from': w3.eth.accounts[0], 'gas': 4000000})
     # Get tx receipt to get contract address
 
     tx_receipt = w3.eth.waitForTransactionReceipt(tx_hash, 10000)
     verifier_address = tx_receipt['contractAddress']
-
 
     # add IC 
     verifier = w3.eth.contract(address=verifier_address, abi=verifier_interface['abi'],ContractFactoryClass=ConciseContract)
@@ -81,7 +82,8 @@ def contract_deploy(tree_depth, vk_dir, merkle_root, host="localhost"):
         tx_hash = verifier.addIC(vk[-1] , transact={'from': w3.eth.accounts[0], 'gas': 4000000})
         tx_receipt = w3.eth.waitForTransactionReceipt(tx_hash, 100000)
 
-    tx_hash = rollup.deploy(transaction={'from': w3.eth.accounts[0], 'gas': 4000000}, args=[verifier_address, merkle_root])
+    # tx_hash = rollup.deploy(transaction={'from': w3.eth.accounts[0], 'gas': 4000000}, args=[verifier_address, merkle_root])
+    tx_hash = rollup.constructor(verifier_address, merkle_root).transact(transaction={'from': w3.eth.accounts[0], 'gas': 4000000})
 
     # Get tx receipt to get contract address
     tx_receipt = w3.eth.waitForTransactionReceipt(tx_hash, 10000)

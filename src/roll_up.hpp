@@ -22,6 +22,7 @@
 #include <memory>
 
 #include <libsnark/gadgetlib1/gadget.hpp>
+#include <libsnark/zk_proof_systems/ppzksnark/r1cs_gg_ppzksnark/r1cs_gg_ppzksnark.hpp>
 #include <tx.hpp>
 
 

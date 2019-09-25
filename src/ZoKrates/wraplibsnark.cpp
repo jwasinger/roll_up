@@ -16,6 +16,7 @@
 #include "libff/algebra/curves/alt_bn128/alt_bn128_pp.hpp"
 // contains required interfaces and types (keypair, proof, generator, prover, verifier)
 #include <libsnark/zk_proof_systems/ppzksnark/r1cs_ppzksnark/r1cs_ppzksnark.hpp>
+#include <libsnark/zk_proof_systems/ppzksnark/r1cs_gg_ppzksnark/r1cs_gg_ppzksnark.hpp>
 
 typedef long integer_coeff_t;
 
@@ -147,9 +148,9 @@ r1cs_ppzksnark_constraint_system<libff::alt_bn128_pp> createConstraintSystem(con
 }
 
 // keypair generateKeypair(constraints)
-r1cs_ppzksnark_keypair<libff::alt_bn128_pp> generateKeypair(const r1cs_ppzksnark_constraint_system<libff::alt_bn128_pp> &cs){
+r1cs_gg_ppzksnark_keypair<libff::alt_bn128_pp> generateKeypair(const r1cs_ppzksnark_constraint_system<libff::alt_bn128_pp> &cs){
   // from r1cs_ppzksnark.hpp
-  return r1cs_ppzksnark_generator<libff::alt_bn128_pp>(cs);
+  return r1cs_gg_ppzksnark_generator<libff::alt_bn128_pp>(cs);
 }
 
 template<typename T>

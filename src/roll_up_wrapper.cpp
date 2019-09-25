@@ -265,21 +265,26 @@ char* prove(bool _path[][tree_depth][256], bool _pub_key_x[][256], bool _pub_key
     pb.primary_input();
     pb.auxiliary_input();
 
-    r1cs_ppzksnark_keypair<libff::alt_bn128_pp> keypair = generateKeypair(pb.get_constraint_system());
+    r1cs_gg_ppzksnark_keypair<libff::alt_bn128_pp> keypair = generateKeypair(pb.get_constraint_system());
 
-    //save keys
-    vk2json(keypair, "../keys/vk.json");
+    //save keys TODO
+    // vk2json(keypair, "../keys/vk.json");
 
 
     r1cs_primary_input <FieldT> primary_input = pb.primary_input();
     std::cout << "primary_input " << primary_input;
     r1cs_auxiliary_input <FieldT> auxiliary_input = pb.auxiliary_input();
-    r1cs_ppzksnark_proof<libff::alt_bn128_pp> proof = r1cs_ppzksnark_prover<libff::alt_bn128_pp>(keypair.pk, primary_input, auxiliary_input);
+    r1cs_gg_ppzksnark_proof<libff::alt_bn128_pp> proof = r1cs_gg_ppzksnark_prover<libff::alt_bn128_pp>(keypair.pk, primary_input, auxiliary_input);
 
+    auto result = new char[256];
+    /*
     auto json = proof_to_json (proof, primary_input, false);     
 
-    auto result = new char[json.size()];
+
     memcpy(result, json.c_str(), json.size() + 1);     
+    */
+
+    std::cout << "YOLO" << std::endl;
 
     return result; 
 }

@@ -25,6 +25,7 @@
 
 
 #include <libsnark/zk_proof_systems/ppzksnark/r1cs_ppzksnark/r1cs_ppzksnark.hpp>
+#include <libsnark/zk_proof_systems/ppzksnark/r1cs_gg_ppzksnark/r1cs_gg_ppzksnark.hpp>
 
 // ZoKrates
 #include <ZoKrates/wraplibsnark.cpp>
@@ -154,8 +155,35 @@ void r1cs_to_json(protoboard<FieldT> pb, uint input_variables, std::string path)
 }
 
 template<typename FieldT>
+string proof_to_json(r1cs_gg_ppzksnark_proof<libff::alt_bn128_pp> proof, r1cs_primary_input<FieldT> input, bool isInt) {
+    std::string path = "../zksnark_element/proof.json";
+    std::stringstream ss;
+    std::ofstream fh;
+    fh.open(path, std::ios::binary);
+    ss << "{ \"hello\": \"world\" }\n";
+
+    /*
+    if (isInt) {
+        throw("only hex supported");
+    } else {
+        ss << "{\n";
+        ss << "\"a_b\" :[" << outputGtAsHex(proof.alpha_g1_beta_g2) << "],\n";
+        ss << "\"d\" :[" << outputG2AsHex(proof.delta_g2) << "],\n";
+        ss << "\"g\" :[" << outputG2AsHex(proof.gamma_g2) << "],\n";
+        ss << "}\n";
+    }
+    */
+
+    ss.rdbuf()->pubseekpos(0, std::ios_base::out);
+    fh << ss.rdbuf();
+    fh.flush();
+    fh.close();
+    return(ss.str());
+}
+
+template<typename FieldT>
 string proof_to_json(r1cs_ppzksnark_proof<libff::alt_bn128_pp> proof, r1cs_primary_input<FieldT> input, bool isInt) {
-    std::cout << "proof.A = Pairing.G1Point(" << outputPointG1AffineAsHex(proof.g_A.g)<< ");" << endl;
+    std::cout << "proof.A = Pairing.G1Point(" << libsnark::outputPointG1AffineAsHex(proof.g_A.g)<< ");" << endl;
     std::cout << "proof.A_p = Pairing.G1Point(" << outputPointG1AffineAsHex(proof.g_A.h)<< ");" << endl;
     std::cout << "proof.B = Pairing.G2Point(" << outputPointG2AffineAsHex(proof.g_B.g)<< ");" << endl;
     std::cout << "proof.B_p = Pairing.G1Point(" << outputPointG1AffineAsHex(proof.g_B.h)<<");" << endl;
@@ -221,6 +249,14 @@ string proof_to_json(r1cs_ppzksnark_proof<libff::alt_bn128_pp> proof, r1cs_prima
     fh.flush();
     fh.close();
     return(ss.str());
+}
+
+void vk2json(r1cs_gg_ppzksnark_keypair<libff::alt_bn128_pp> keypair, std::string path) {
+    std::stringstream ss;
+    std::ofstream fh;
+    fh.open(path, std::ios::binary);
+
+    // TODO
 }
 
 void vk2json(r1cs_ppzksnark_keypair<libff::alt_bn128_pp> keypair, std::string path ) {

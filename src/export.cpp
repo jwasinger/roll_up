@@ -263,6 +263,13 @@ void vk2json(r1cs_gg_ppzksnark_keypair<libff::alt_bn128_pp> keypair, std::string
     ss << "\"b\" :[" << outputPointG2AffineAsHex(keypair.vk.beta_g2) << "],\n";
     ss << "\"d\" :[" << outputPointG2AffineAsHex(keypair.vk.delta_g2) << "],\n";
     ss << "\"g\" :[" << outputPointG2AffineAsHex(keypair.vk.gamma_g2) << "],\n";
+
+    ss << "\"IC\": [\n";
+    for (auto i = 0; i < keypair.vk.gamma_ABC_g1.rest.size(); i++) {
+        ss << "\"" << outputPointG1AffineAsHex(keypair.vk.gamma_ABC_g1.rest[i]) << "\"\n";
+    }
+
+    ss << "]\n";
     ss << "}\n";
 
     ss.rdbuf()->pubseekpos(0, std::ios_base::out);

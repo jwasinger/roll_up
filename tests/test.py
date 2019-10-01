@@ -127,6 +127,7 @@ if __name__ == "__main__":
     proof, root = genWitness(leaves, pub_x, pub_y, address, tree_depth, 
                                 rhs_leaf, new_leaf , R_x, R_y, S)              
 
+    import pdb; pdb.set_trace()
 
 
     proof = normalize_proof(proof)

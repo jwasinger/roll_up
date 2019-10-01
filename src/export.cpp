@@ -167,7 +167,8 @@ string proof_to_json(r1cs_gg_ppzksnark_proof<libff::alt_bn128_pp> proof, r1cs_pr
         throw("only hex supported");
     } else {
         ss << "{\n";
-        ss << "\"a_b\" :[" << outputGtAsHex(proof.alpha_g1_beta_g2) << "],\n";
+        ss << "\"a\" :[" << outputGtAsHex(proof.alpha_g1) << "],\n";
+        ss << "\"b\" :[" << outputGtAsHex(proof.beta_g2) << "],\n";
         ss << "\"d\" :[" << outputG2AsHex(proof.delta_g2) << "],\n";
         ss << "\"g\" :[" << outputG2AsHex(proof.gamma_g2) << "],\n";
         ss << "}\n";
@@ -183,7 +184,7 @@ string proof_to_json(r1cs_gg_ppzksnark_proof<libff::alt_bn128_pp> proof, r1cs_pr
 
 template<typename FieldT>
 string proof_to_json(r1cs_ppzksnark_proof<libff::alt_bn128_pp> proof, r1cs_primary_input<FieldT> input, bool isInt) {
-    std::cout << "proof.A = Pairing.G1Point(" << libsnark::outputPointG1AffineAsHex(proof.g_A.g)<< ");" << endl;
+    std::cout << "proof.A = Pairing.G1Point(" << outputPointG1AffineAsHex(proof.g_A.g)<< ");" << endl;
     std::cout << "proof.A_p = Pairing.G1Point(" << outputPointG1AffineAsHex(proof.g_A.h)<< ");" << endl;
     std::cout << "proof.B = Pairing.G2Point(" << outputPointG2AffineAsHex(proof.g_B.g)<< ");" << endl;
     std::cout << "proof.B_p = Pairing.G1Point(" << outputPointG1AffineAsHex(proof.g_B.h)<<");" << endl;
@@ -255,8 +256,20 @@ void vk2json(r1cs_gg_ppzksnark_keypair<libff::alt_bn128_pp> keypair, std::string
     std::stringstream ss;
     std::ofstream fh;
     fh.open(path, std::ios::binary);
+    // ss << "{ \"hello\": \"world\" }\n";
 
-    // TODO
+    ss << "{\n";
+    ss << "\"a\" :[" << outputPointG1AffineAsHex(keypair.vk.alpha_g1) << "],\n";
+    ss << "\"b\" :[" << outputPointG2AffineAsHex(keypair.vk.beta_g2) << "],\n";
+    ss << "\"d\" :[" << outputPointG2AffineAsHex(keypair.vk.delta_g2) << "],\n";
+    ss << "\"g\" :[" << outputPointG2AffineAsHex(keypair.vk.gamma_g2) << "],\n";
+    ss << "}\n";
+
+    ss.rdbuf()->pubseekpos(0, std::ios_base::out);
+    fh << ss.rdbuf();
+    fh.flush();
+    fh.close();
+    //return(ss.str());
 }
 
 void vk2json(r1cs_ppzksnark_keypair<libff::alt_bn128_pp> keypair, std::string path ) {

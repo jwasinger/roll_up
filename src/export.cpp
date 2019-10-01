@@ -160,7 +160,15 @@ string proof_to_json(r1cs_gg_ppzksnark_proof<libff::alt_bn128_pp> proof, r1cs_pr
     std::stringstream ss;
     std::ofstream fh;
     fh.open(path, std::ios::binary);
-    ss << "{ \"hello\": \"world\" }\n";
+    // ss << "{ \"hello\": \"world\" }\n";
+
+    ss << "{\n";
+
+    ss << "\"a\" :[" << outputPointG1AffineAsHex(proof.g_A) << "],\n";
+    ss << "\"b\" :[" << outputPointG2AffineAsHex(proof.g_B) << "],\n";
+    ss << "\"c\" :[" << outputPointG1AffineAsHex(proof.g_C) << "],\n";
+
+    ss << "{\n";
 
     /*
     if (isInt) {
@@ -263,13 +271,16 @@ void vk2json(r1cs_gg_ppzksnark_keypair<libff::alt_bn128_pp> keypair, std::string
     ss << "\"b\" :[" << outputPointG2AffineAsHex(keypair.vk.beta_g2) << "],\n";
     ss << "\"d\" :[" << outputPointG2AffineAsHex(keypair.vk.delta_g2) << "],\n";
     ss << "\"g\" :[" << outputPointG2AffineAsHex(keypair.vk.gamma_g2) << "],\n";
+    ss <<  "\"IC\" :[[" << outputPointG1AffineAsHex(keypair.vk.gamma_ABC_g1.first) << "]";
+    
+    auto icLength = keypair.vk.gamma_ABC_g1.rest.size();
+    for (size_t i = 1; i < icLength; ++i)
+    {   
+        auto vkICi = outputPointG1AffineAsHex(keypair.vk.gamma_ABC_g1.rest.values[i - 1]);
+        ss << ",[" <<  vkICi << "]";
+    } 
+    ss << "]";
 
-    ss << "\"IC\": [\n";
-    for (auto i = 0; i < keypair.vk.gamma_ABC_g1.rest.size(); i++) {
-        ss << "\"" << outputPointG1AffineAsHex(keypair.vk.gamma_ABC_g1.rest[i]) << "\"\n";
-    }
-
-    ss << "]\n";
     ss << "}\n";
 
     ss.rdbuf()->pubseekpos(0, std::ios_base::out);
